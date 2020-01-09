@@ -1,53 +1,72 @@
-var express = require("express");
+const express = require('express')
+const burger = require('../models/burger')
 
-// performs route handleing
-var router = express.Router();
+const router = express.Router()
 
-// import orms from burger.js
-var burger = require("../models/burger.js");
+// router.get('/', (req, res) => {
+//     res.send()
+// })
 
-// route handler for root route to display all burgers
-router.get("/", function(req, res){
-    // display all burgers
-    burger.selectAll(function(data){
-        // var for handlebar object
-        var hbsObj = {
-            // setting data in hbs as burgers
-            burgers: data
+router.get('/', (req, res) => {
+    burger.selectAll((err, data) => {
+        if (err) {
+            return res.send(err)
         }
-        console.log(hbsObj);
-        // render index.html with data from burgers table
-        res.render("index", hbsObj)
-    });
-});
 
-// route handler to add a burger
-router.post("/api/burgers", function(req, res){
-    console.log("post attempt to /api/burgers")
-    // orm to add a burger with data from body
-    burger.insertOne(["burger_name"], [req.body.burger], function(data){
-        // log new burger added and redirect to root route
-        console.log("new burger added");
-        res.redirect("/")
-    });
-});
+        res.render('index', {burgers: data})
+    })
+})
 
-// route to update a burger
-router.put("/api/burgers/:id", function(req, res){
-    var condition = "id = " + req.params.id;
-    // orm to update on burger with data from body
-    burger.updateOne({
-        // update devoured from body
-        devoured: "true"
-    }, condition, function(result){
-        // check to see if id exists
-        if(result.changedRows === 0){
-            return res.status(404).end();
-        } else {
-            res.status(200).end();
+router.put('/burger', (req, res) => {
+    const set = {
+        devoured: req.body.devoured
+    }
+    const where = {
+        id: req.body.id
+    }
+
+    burger.updateOne(set, where, (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.send(err)
         }
-    });
-});
 
-// export router for server.js
-module.exports = router;
+        res.send(data)
+    })
+})
+
+router.post('/burger', (req, res) => {
+    // get the burger name
+    const name = req.body.name
+
+    // send to ORM
+    burger.insertOne(name, (err, data) => {
+        if (err) {
+            return res.send(err)
+        }
+
+        res.json({
+            success: true,
+            insertId: data.insertId
+        })
+    })
+})
+
+router.delete('/burger', (req, res) => {
+    const id = req.body.id
+
+    burger.deleteOne(id, (err, data) => {
+        if (err) {
+            res.json({
+                success: false
+            })
+        }
+
+        res.json({
+            success: true
+        })
+    })
+})
+
+
+module.exports = router

@@ -1,38 +1,25 @@
-// import orm.js
 var orm = require("../config/orm.js");
 
-
-
-console.log("connected to burger.js");
-// create the code that will call the ORM functions using burger specific input for the ORM
-var burger = {
-    all: function(cb) {
-        orm.all("burgers", function(res){
-            console.log(res);
-            cb(res);
-
-        });
+// set orms in burger
+const burger = {
+    selectAll: (cb) => {
+        orm.selectAll(cb)
     },
-    // variables cols and cals are arrays
-    create: function(cols, vals, cb) {
-        orm.create("burgers", cols, vals, function(res){
-            cb(res);
-        });
+
+    insertOne: (name, cb) => {
+        orm.insertOne(name, cb)
     },
-    update: function(objColVals, condition, cb) {
-        orm.update("burgers", objColVals, condition, function(res){
-            cb(res);
-        });
+
+    updateOne: (set, where, cb) => {
+        orm.updateOne(set, where, cb)
     },
-    delete: function(condition, cb) {
-        orm.delete("burgers",condition, function(res) {
-            cb(res);
-        });
+
+    deleteOne: (id, cb) => {
+        orm.deleteOne(id, cb)
     }
+
+    
 }
 
-
-
-
-// export 
+// export burger for burgers_controller to use
 module.exports = burger;

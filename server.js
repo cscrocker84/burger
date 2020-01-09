@@ -1,4 +1,6 @@
 var express = require("express");
+var exhbs = require("express-handlebars");
+var path = require('path');
 
 var PORT = process.env.PORT || 3000;
 
@@ -11,8 +13,8 @@ app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-// set handlebars
-var exhbs = require("express-handlebars");
+
+
 
 // middleware for handlebars
 app.engine("handlebars", exhbs({defaultLayout: "main"}));
