@@ -7,11 +7,11 @@ var PORT = process.env.PORT || 3000;
 var app = express();
 
 // serve static content for the app from the public directory
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')))
 
-// parse body requests as JSON
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
+// Parse data
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 
 
